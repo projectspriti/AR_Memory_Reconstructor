@@ -7,10 +7,18 @@ from config import Config
 
 def main():
     try:
-        # Connect to MongoDB
-        client = MongoClient(Config.MONGODB_URI, serverSelectionTimeoutMS=5000)
+        # Connect to MongoDB (Atlas or local)
+        if 'mongodb+srv' in Config.MONGODB_URI:
+            client = MongoClient(
+                Config.MONGODB_URI, 
+                serverSelectionTimeoutMS=30000,
+                connectTimeoutMS=30000
+            )
+        else:
+            client = MongoClient(Config.MONGODB_URI, serverSelectionTimeoutMS=5000)
+        
         client.admin.command('ping')
-        print("✓ Connected to MongoDB")
+        print("✓ Connected to MongoDB Atlas")
         
         # Get database
         db = client[Config.MONGODB_DATABASE]

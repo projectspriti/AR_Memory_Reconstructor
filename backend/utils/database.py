@@ -21,7 +21,17 @@ class Database:
     def _init_connection(self):
         """Initialize MongoDB connection"""
         try:
-            self._client = MongoClient(self.mongodb_uri, serverSelectionTimeoutMS=5000)
+            # For Atlas connections, use longer timeout and read preference
+            if 'mongodb+srv' in self.mongodb_uri:
+                self._client = MongoClient(
+                    self.mongodb_uri, 
+                    serverSelectionTimeoutMS=30000,
+                    connectTimeoutMS=30000,
+                    socketTimeoutMS=30000
+                )
+            else:
+                self._client = MongoClient(self.mongodb_uri, serverSelectionTimeoutMS=5000)
+            
             # Test connection
             self._client.admin.command('ping')
             self._db = self._client[self.database_name]

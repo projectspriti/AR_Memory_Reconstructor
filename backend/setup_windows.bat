@@ -12,8 +12,22 @@ pip install -r requirements.txt
 :: Create .env file
 if not exist ".env" copy .env.example .env
 
-:: Initialize database
-python setup_mongodb.py
+:: Choose database setup
+echo.
+echo Choose database option:
+echo 1. MongoDB Atlas (Cloud - Recommended)
+echo 2. Local MongoDB
+set /p choice="Enter choice (1 or 2): "
+
+if "%choice%"=="1" (
+    echo.
+    echo Setting up MongoDB Atlas...
+    python setup_atlas.py
+) else (
+    echo.
+    echo Setting up local MongoDB...
+    python setup_mongodb.py
+)
 
 echo.
 echo Setup complete! To start the server:
